@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.LanguageFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="30dp">
+
+            <RadioGroup
+                android:id="@+id/radios"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="right"
+                android:inputType="text"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/engrb"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:button="@null"
+                    android:drawableRight="@android:drawable/btn_radio"
+                    android:drawablePadding="30dp"
+                    android:text="English"
+                    android:textSize="20dip" />
+
+                <RadioButton
+                    android:id="@+id/bmrb"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@android:drawable/btn_radio"
+                    android:drawablePadding="30dp"
+                    android:text="Bahasa Malaysia"
+                    android:textSize="20dp" />
+
+                <RadioButton
+                    android:id="@+id/mandtsimrb"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@android:drawable/btn_radio"
+                    android:drawablePadding="30dp"
+                    android:text="Mandarin (Simplified)"
+                    android:textSize="20dp" />
+
+                <RadioButton
+                    android:id="@+id/mandtradrb"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@android:drawable/btn_radio"
+                    android:drawablePadding="30dp"
+                    android:text="Mandarin (Traditional)"
+                    android:textSize="20dp" />
+
+                <RadioButton
+                    android:id="@+id/tamrb"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="@android:drawable/btn_radio"
+                    android:drawablePadding="30dp"
+                    android:text="third"
+                    android:textSize="20dp" />
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>
