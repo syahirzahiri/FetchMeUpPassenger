@@ -1,4 +1,4 @@
-package com.urbantechies.fetch_me_up_passenger.drivers;
+package com.urbantechies.fetch_me_up_passenger.passengers;
 
 
 import android.Manifest;

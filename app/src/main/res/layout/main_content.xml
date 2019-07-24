@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".drivers.HomePage"
+    tools:context=".passengers.HomePage"
     android:id="@+id/fragment">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

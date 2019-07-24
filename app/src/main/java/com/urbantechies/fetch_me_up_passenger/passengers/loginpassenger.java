@@ -23,9 +23,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.urbantechies.fetch_me_up_passenger.PassengerClient;
 import com.urbantechies.fetch_me_up_passenger.R;
-import com.urbantechies.fetch_me_up_passenger.drivers.HomePage;
-import com.urbantechies.fetch_me_up_passenger.model.User;
+import com.urbantechies.fetch_me_up_passenger.model.Passenger;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -119,7 +119,7 @@ public class loginpassenger extends AppCompatActivity {
                             .build();
                     db.setFirestoreSettings(settings);
 
-                    DocumentReference userRef = db.collection(getString(R.string.collection_users))
+                    DocumentReference userRef = db.collection(getString(R.string.collection_passengers))
                             .document(user.getUid());
 
                     userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -127,8 +127,8 @@ public class loginpassenger extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()){
                                 Log.d(TAG, "onComplete: successfully set the user client.");
-                                User user = task.getResult().toObject(User.class);
-//                                ((UserClient)(getApplicationContext())).setUser(user);
+                                Passenger passenger = task.getResult().toObject(Passenger.class);
+                                ((PassengerClient)(getApplicationContext())).setPassenger(passenger);
                             }
                         }
                     });

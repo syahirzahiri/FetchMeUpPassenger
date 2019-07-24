@@ -5,29 +5,29 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 
-public class UserLocation {
+public class PassengerLocation {
 
-    private User user;
+    private Passenger passenger;
     private GeoPoint geo_point;
     private @ServerTimestamp
     Date timestamp;
 
-    public UserLocation(User user, GeoPoint geo_point, Date timestamp) {
-        this.user = user;
+    public PassengerLocation(Passenger passenger, GeoPoint geo_point, Date timestamp) {
+        this.passenger = passenger;
         this.geo_point = geo_point;
         this.timestamp = timestamp;
     }
 
-    public UserLocation() {
+    public PassengerLocation() {
 
     }
 
-    public User getUser() {
-        return user;
+    public Passenger getPassenger() {
+        return passenger;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setPassenger(Passenger passenger) {
+        this.passenger = passenger;
     }
 
     public GeoPoint getGeo_point() {
@@ -49,7 +49,7 @@ public class UserLocation {
     @Override
     public String toString() {
         return "UserLocation{" +
-                "user=" + user +
+                "passenger=" + passenger +
                 ", geo_point=" + geo_point +
                 ", timestamp=" + timestamp +
                 '}';

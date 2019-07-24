@@ -1,4 +1,4 @@
-package com.urbantechies.fetch_me_up_passenger.drivers;
+package com.urbantechies.fetch_me_up_passenger.passengers;
 
 
 import android.os.Bundle;
@@ -14,10 +14,10 @@ import com.urbantechies.fetch_me_up_passenger.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PassengerRequestFragment extends Fragment {
+public class TripDetailFragment extends Fragment {
 
 
-    public PassengerRequestFragment() {
+    public TripDetailFragment() {
         // Required empty public constructor
     }
 
@@ -26,7 +26,7 @@ public class PassengerRequestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_passenger_request, container, false);
+        return inflater.inflate(R.layout.fragment_trip_detail, container, false);
     }
 
 }

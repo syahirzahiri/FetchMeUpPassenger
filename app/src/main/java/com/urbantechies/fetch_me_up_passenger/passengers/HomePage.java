@@ -1,4 +1,4 @@
-package com.urbantechies.fetch_me_up_passenger.drivers;
+package com.urbantechies.fetch_me_up_passenger.passengers;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -38,11 +38,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.urbantechies.fetch_me_up_passenger.DriverClient;
+import com.urbantechies.fetch_me_up_passenger.PassengerClient;
 import com.urbantechies.fetch_me_up_passenger.R;
-import com.urbantechies.fetch_me_up_passenger.model.Driver;
-import com.urbantechies.fetch_me_up_passenger.model.DriverLocation;
-import com.urbantechies.fetch_me_up_passenger.model.UserLocation;
+import com.urbantechies.fetch_me_up_passenger.model.Passenger;
+import com.urbantechies.fetch_me_up_passenger.model.PassengerLocation;
 
 import static com.urbantechies.fetch_me_up_passenger.Constants.ERROR_DIALOG_REQUEST;
 import static com.urbantechies.fetch_me_up_passenger.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
@@ -58,8 +57,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private FirebaseFirestore mDb;
-    private UserLocation mUserLocation;
-    private DriverLocation mDriverLocation;
+    private PassengerLocation mPassengerLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,10 +92,10 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
 
     private void getUserDetails(){
-        if (mDriverLocation == null){
-            mDriverLocation = new DriverLocation();
+        if (mPassengerLocation == null){
+            mPassengerLocation = new PassengerLocation();
 
-            DocumentReference userRef = mDb.collection(getString(R.string.collection_drivers))
+            DocumentReference userRef = mDb.collection(getString(R.string.collection_passengers))
                     .document(FirebaseAuth.getInstance().getUid());
 
             userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -106,9 +104,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     if(task.isSuccessful()){
                         Log.d(TAG, "onComplete: successfly get the user details");
 
-                        Driver driver = task.getResult().toObject(Driver.class);
-                        mDriverLocation.setDriver(driver);
-                        ((DriverClient)getApplicationContext()).setDriver(driver);
+                        Passenger passenger = task.getResult().toObject(Passenger.class);
+                        mPassengerLocation.setPassenger(passenger);
+                        ((PassengerClient)getApplicationContext()).setPassenger(passenger);
                         getLastKnownLocation();
                     }
                 }
@@ -122,18 +120,18 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
     private void saveUserLocation(){
 
-        if(mDriverLocation != null){
+        if(mPassengerLocation != null){
             DocumentReference locationRef = mDb.
-                    collection(getString(R.string.collection_driver_locations))
+                    collection(getString(R.string.collection_passenger_locations))
                     .document(FirebaseAuth.getInstance().getUid());
 
-            locationRef.set(mDriverLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
+            locationRef.set(mPassengerLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
                         Log.d(TAG, "saveUserLocation: \ninserted user location into database." +
-                                "\n latitude: " + mDriverLocation.getGeo_point().getLatitude() +
-                                "\n longitude: " + mDriverLocation.getGeo_point().getLongitude());
+                                "\n latitude: " + mPassengerLocation.getGeo_point().getLatitude() +
+                                "\n longitude: " + mPassengerLocation.getGeo_point().getLongitude());
                     }
                 }
             });
@@ -156,8 +154,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     Log.d(TAG, "onComplete: latitude: " + geoPoint.getLatitude());
 
 
-                    mDriverLocation.setGeo_point(geoPoint);
-                    mDriverLocation.setTimestamp(null);
+                    mPassengerLocation.setGeo_point(geoPoint);
+                    mPassengerLocation.setTimestamp(null);
                     saveUserLocation();
                 }
             }
@@ -207,7 +205,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(this, logindriver.class);
+        Intent intent = new Intent(this, loginpassenger.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
