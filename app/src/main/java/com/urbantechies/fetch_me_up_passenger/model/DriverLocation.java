@@ -8,45 +8,45 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 
-public class PassengerLocation implements Parcelable {
+public class DriverLocation implements Parcelable {
 
-    private Passenger passenger;
+    private Driver driver;
     private GeoPoint geo_point;
     private @ServerTimestamp
     Date timestamp;
 
-    public PassengerLocation(Passenger passenger, GeoPoint geo_point, Date timestamp) {
-        this.passenger = passenger;
+    public DriverLocation(Driver driver, GeoPoint geo_point, Date timestamp) {
+        this.driver = driver;
         this.geo_point = geo_point;
         this.timestamp = timestamp;
     }
 
-    public PassengerLocation() {
+    public DriverLocation() {
 
     }
 
-    protected PassengerLocation(Parcel in) {
-        passenger = in.readParcelable(Passenger.class.getClassLoader());
+    protected DriverLocation(Parcel in) {
+        driver = in.readParcelable(Driver.class.getClassLoader());
     }
 
-    public static final Creator<PassengerLocation> CREATOR = new Creator<PassengerLocation>() {
+    public static final Creator<DriverLocation> CREATOR = new Creator<DriverLocation>() {
         @Override
-        public PassengerLocation createFromParcel(Parcel in) {
-            return new PassengerLocation(in);
+        public DriverLocation createFromParcel(Parcel in) {
+            return new DriverLocation(in);
         }
 
         @Override
-        public PassengerLocation[] newArray(int size) {
-            return new PassengerLocation[size];
+        public DriverLocation[] newArray(int size) {
+            return new DriverLocation[size];
         }
     };
 
-    public Passenger getPassenger() {
-        return passenger;
+    public Driver getDriver() {
+        return driver;
     }
 
-    public void setPassenger(Passenger passenger) {
-        this.passenger = passenger;
+    public void setDriver(Driver driver) {
+        this.driver = driver;
     }
 
     public GeoPoint getGeo_point() {
@@ -68,7 +68,7 @@ public class PassengerLocation implements Parcelable {
     @Override
     public String toString() {
         return "UserLocation{" +
-                "passenger=" + passenger +
+                "driver=" + driver +
                 ", geo_point=" + geo_point +
                 ", timestamp=" + timestamp +
                 '}';
@@ -81,6 +81,6 @@ public class PassengerLocation implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(passenger, i);
+        parcel.writeParcelable(driver, i);
     }
 }

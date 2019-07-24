@@ -13,6 +13,10 @@
     <!-- Firestore Strings -->
 
     <!-- Intent extras -->
+    <string name="intent_chatroom">intent_chatroom</string>
+    <string name="intent_user_list">intent_user_list</string>
+    <string name="intent_user_locations">intent_user_locations</string>
+    <string name="intent_location">intent_location</string>
 
     <!-- Service and Broadcasts -->
 
@@ -26,6 +30,11 @@
     <!-- Firestore Syahir Strings -->
     <string name="collection_passengers">Passengers</string>
     <string name="collection_passenger_locations">Passenger Locations</string>
+    <string name="collection_drivers">Drivers</string>
+    <string name="collection_driver_locations">Driver Locations</string>
+    <string name="collection_driver_online">Driver Online</string>
 
+    <!-- Intent Syahir extras -->
+    <string name="intent_passenger_location">intent_passenger_location</string>
 
 </resources>
