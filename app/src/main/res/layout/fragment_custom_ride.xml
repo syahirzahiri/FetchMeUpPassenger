@@ -83,7 +83,7 @@
                                 android:layout_height="wrap_content"
                                 android:lines="2"
                                 android:maxLines="10"
-                                android:text="Fare: /n RM30"
+                                android:text="Fare: RM30"
                                 android:textColor="#000000"
                                 android:textSize="18sp" />
 

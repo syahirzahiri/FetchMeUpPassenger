@@ -3,7 +3,7 @@ package com.urbantechies.fetch_me_up_passenger.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Passenger implements Parcelable {
+public class User implements Parcelable {
 
     private String first_name;
     private String last_name;
@@ -14,7 +14,7 @@ public class Passenger implements Parcelable {
     private String matric_id;
     private String avatar;
 
-    public Passenger(String first_name, String last_name, String email, String user_id, String username, String phone_no, String matric_id, String avatar) {
+    public User(String first_name, String last_name, String email, String user_id, String username, String phone_no, String matric_id, String avatar) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
@@ -25,11 +25,11 @@ public class Passenger implements Parcelable {
         this.avatar = avatar;
     }
 
-    public Passenger() {
+    public User() {
 
     }
 
-    protected Passenger(Parcel in) {
+    protected User(Parcel in) {
         first_name = in.readString();
         last_name = in.readString();
         email = in.readString();
@@ -40,15 +40,15 @@ public class Passenger implements Parcelable {
         avatar = in.readString();
     }
 
-    public static final Creator<Passenger> CREATOR = new Creator<Passenger>() {
+    public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
-        public Passenger createFromParcel(Parcel in) {
-            return new Passenger(in);
+        public User createFromParcel(Parcel in) {
+            return new User(in);
         }
 
         @Override
-        public Passenger[] newArray(int size) {
-            return new Passenger[size];
+        public User[] newArray(int size) {
+            return new User[size];
         }
     };
 
@@ -116,10 +116,9 @@ public class Passenger implements Parcelable {
         this.avatar = avatar;
     }
 
-
     @Override
     public String toString() {
-        return "Passenger{" +
+        return "User{" +
                 "first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
                 ", email='" + email + '\'' +
@@ -130,7 +129,6 @@ public class Passenger implements Parcelable {
                 ", avatar='" + avatar + '\'' +
                 '}';
     }
-
 
 
     @Override

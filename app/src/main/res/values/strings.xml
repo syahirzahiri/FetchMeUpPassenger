@@ -33,6 +33,9 @@
     <string name="collection_drivers">Drivers</string>
     <string name="collection_driver_locations">Driver Locations</string>
     <string name="collection_driver_online">Driver Online</string>
+    <string name="collection_user">User</string>
+    <string name="collection_user_locations">User Locations</string>
+    <string name="collection_user_online">User Online</string>
 
     <!-- Intent Syahir extras -->
     <string name="intent_passenger_location">intent_passenger_location</string>

@@ -12,8 +12,9 @@ public class Driver implements Parcelable {
     private String username;
     private String phone_no;
     private String matric_id;
+    private String avatar;
 
-    public Driver(String first_name, String last_name, String email, String user_id, String username, String phone_no, String matric_id) {
+    public Driver(String first_name, String last_name, String email, String user_id, String username, String phone_no, String matric_id, String avatar) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
@@ -21,6 +22,7 @@ public class Driver implements Parcelable {
         this.username = username;
         this.phone_no = phone_no;
         this.matric_id = matric_id;
+        this.avatar = avatar;
     }
 
     public Driver() {
@@ -35,6 +37,7 @@ public class Driver implements Parcelable {
         username = in.readString();
         phone_no = in.readString();
         matric_id = in.readString();
+        avatar = in.readString();
     }
 
     public static final Creator<Driver> CREATOR = new Creator<Driver>() {
@@ -48,7 +51,6 @@ public class Driver implements Parcelable {
             return new Driver[size];
         }
     };
-
 
     public String getFirst_name() {
         return first_name;
@@ -106,6 +108,14 @@ public class Driver implements Parcelable {
         this.matric_id = matric_id;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     public String toString() {
         return "Driver{" +
@@ -116,8 +126,10 @@ public class Driver implements Parcelable {
                 ", username='" + username + '\'' +
                 ", phone_no='" + phone_no + '\'' +
                 ", matric_id='" + matric_id + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -125,14 +137,15 @@ public class Driver implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(first_name);
-        dest.writeString(last_name);
-        dest.writeString(email);
-        dest.writeString(user_id);
-        dest.writeString(username);
-        dest.writeString(phone_no);
-        dest.writeString(matric_id);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(first_name);
+        parcel.writeString(last_name);
+        parcel.writeString(email);
+        parcel.writeString(user_id);
+        parcel.writeString(username);
+        parcel.writeString(phone_no);
+        parcel.writeString(matric_id);
+        parcel.writeString(avatar);
     }
 }
 

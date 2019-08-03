@@ -23,9 +23,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.urbantechies.fetch_me_up_passenger.PassengerClient;
 import com.urbantechies.fetch_me_up_passenger.R;
-import com.urbantechies.fetch_me_up_passenger.model.Passenger;
+import com.urbantechies.fetch_me_up_passenger.ServiceOption;
+import com.urbantechies.fetch_me_up_passenger.UserClient;
+import com.urbantechies.fetch_me_up_passenger.model.User;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -44,6 +45,7 @@ public class loginpassenger extends AppCompatActivity {
     private Button signup_btn;
 
     private String currMode;
+    private User currUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,14 +129,21 @@ public class loginpassenger extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()){
                                 Log.d(TAG, "onComplete: successfully set the user client.");
-                                Passenger passenger = task.getResult().toObject(Passenger.class);
-                                ((PassengerClient)(getApplicationContext())).setPassenger(passenger);
+                                User user = task.getResult().toObject(User.class);
+                                currUser = user;
+                                ((UserClient)(getApplicationContext())).setUser(user);
                             }
                         }
                     });
 
-                    Intent intent = new Intent(loginpassenger.this, HomePage.class);
+                    Intent intent = new Intent(loginpassenger.this, ServiceOption.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                   // Bundle bundle = new Bundle();
+                  //  bundle.putSerializable("CURR_USER_LOGIN", (Serializable) currUser);
+                   // intent.putExtras(bundle);
+
+
                     startActivity(intent);
                     finish();
 

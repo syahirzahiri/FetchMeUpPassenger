@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.startup">
+    tools:context="ServiceOption">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,17 +31,17 @@
             app:srcCompat="@drawable/logo" />
 
         <Button
-            android:id="@+id/passengerbtn"
+            android:id="@+id/finddriverbtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="100dp"
             android:layout_marginTop="100dp"
             android:layout_marginRight="100dp"
             android:layout_marginBottom="100dp"
+            android:textSize="20dp"
             android:background="#FFFFFF"
             android:padding="20dp"
-            android:text="Passenger"
-            android:textSize="20dp" />
+            android:text="Search Driver" />
 
         <LinearLayout
             android:layout_width="match_parent"
