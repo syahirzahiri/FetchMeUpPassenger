@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +38,6 @@ import java.util.ArrayList;
 public class RunMap extends Fragment {
 
     private String TAG = "RunMap";
-    private Button btnRunMap;
 
     private FirebaseFirestore mDb;
     private ListenerRegistration mUserListEventListener;
@@ -74,16 +72,7 @@ public class RunMap extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_run_map, container, false);
 
-        btnRunMap = view.findViewById(R.id.btn_run);
 
-        btnRunMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Log.d(TAG, "Tekan");
-                inflateUserListFragment();
-            }
-        });
         // Inflate the layout for this fragment
         return view;
 

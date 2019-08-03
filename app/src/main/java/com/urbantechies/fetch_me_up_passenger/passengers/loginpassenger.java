@@ -69,8 +69,6 @@ public class loginpassenger extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signIn();
-                //Intent toHomepage = new Intent(logindriver.this, HomePage.class);
-                // startActivity(toHomepage);
             }
         });
 
@@ -138,12 +136,6 @@ public class loginpassenger extends AppCompatActivity {
 
                     Intent intent = new Intent(loginpassenger.this, ServiceOption.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                   // Bundle bundle = new Bundle();
-                  //  bundle.putSerializable("CURR_USER_LOGIN", (Serializable) currUser);
-                   // intent.putExtras(bundle);
-
-
                     startActivity(intent);
                     finish();
 

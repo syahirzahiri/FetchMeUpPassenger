@@ -3,6 +3,8 @@ package com.urbantechies.fetch_me_up_passenger.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 public class User implements Parcelable {
 
     private String first_name;
@@ -13,8 +15,9 @@ public class User implements Parcelable {
     private String phone_no;
     private String matric_id;
     private String avatar;
+    private String status;
 
-    public User(String first_name, String last_name, String email, String user_id, String username, String phone_no, String matric_id, String avatar) {
+    public User(String first_name, String last_name, String email, String user_id, String username, String phone_no, String matric_id, String avatar, String status) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
@@ -23,6 +26,7 @@ public class User implements Parcelable {
         this.phone_no = phone_no;
         this.matric_id = matric_id;
         this.avatar = avatar;
+        this.status = status;
     }
 
     public User() {
@@ -38,6 +42,7 @@ public class User implements Parcelable {
         phone_no = in.readString();
         matric_id = in.readString();
         avatar = in.readString();
+        status = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -116,6 +121,15 @@ public class User implements Parcelable {
         this.avatar = avatar;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @NonNull
     @Override
     public String toString() {
         return "User{" +
@@ -127,9 +141,9 @@ public class User implements Parcelable {
                 ", phone_no='" + phone_no + '\'' +
                 ", matric_id='" + matric_id + '\'' +
                 ", avatar='" + avatar + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
-
 
     @Override
     public int describeContents() {
@@ -146,6 +160,7 @@ public class User implements Parcelable {
         parcel.writeString(phone_no);
         parcel.writeString(matric_id);
         parcel.writeString(avatar);
+        parcel.writeString(status);
     }
 }
 

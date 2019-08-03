@@ -21,7 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.urbantechies.fetch_me_up_passenger.R;
-import com.urbantechies.fetch_me_up_passenger.model.Passenger;
+import com.urbantechies.fetch_me_up_passenger.model.User;
 
 import static android.text.TextUtils.isEmpty;
 import static com.urbantechies.fetch_me_up_passenger.util.Check.doStringsMatch;
@@ -78,14 +78,19 @@ public class signuppassenger extends AppCompatActivity implements View.OnClickLi
                             Log.d(TAG, "onComplete: AuthState: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                             //insert some default data
-                            Passenger passenger = new Passenger();
-                            passenger.setFirst_name(firstName);
-                            passenger.setLast_name(lastName);
-                            passenger.setEmail(email);
-                            passenger.setUsername(email.substring(0, email.indexOf("@")));
-                            passenger.setUser_id(FirebaseAuth.getInstance().getUid());
-                            passenger.setPhone_no(phoneNo);
-                            passenger.setMatric_id(matricID);
+                            User user = new User();
+                            user.setFirst_name(firstName);
+                            user.setLast_name(lastName);
+                            user.setEmail(email);
+                            user.setUsername(email.substring(0, email.indexOf("@")));
+                            user.setUser_id(FirebaseAuth.getInstance().getUid());
+                            user.setPhone_no(phoneNo);
+                            user.setMatric_id(matricID);
+                            user.setStatus("Passenger");
+                            int avatar = R.drawable.ic_person_black_24dp; // set the default avatar
+                            user.setAvatar(Integer.toString(avatar));
+
+
 
                             FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                                     .build();
@@ -95,7 +100,7 @@ public class signuppassenger extends AppCompatActivity implements View.OnClickLi
                                     .collection(getString(R.string.collection_passengers))
                                     .document(FirebaseAuth.getInstance().getUid());
 
-                            newUserRef.set(passenger).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            newUserRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     hideDialog();

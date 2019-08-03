@@ -21,16 +21,169 @@
             android:layout_marginBottom="0dp" />
 
         <ImageButton
+            android:id="@+id/btn_reset_map"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:src="@drawable/ic_refresh_black_24dp"
-            android:background="@color/White"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
             android:layout_marginStart="10dp"
-            android:id="@+id/btn_reset_map"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/White"
+            android:src="@drawable/ic_refresh_black_24dp" />
+
+
+        <LinearLayout
+            android:id="@+id/navigation_layout"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="80dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="50"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50">
+
+                        <ImageView
+                            android:id="@+id/imageView6"
+                            android:layout_width="43dp"
+                            android:layout_height="45dp"
+                            app:srcCompat="@drawable/ic_my_location_black_24dp" />
+
+                        <EditText
+                            android:id="@+id/from_text_nav"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:ems="10"
+                            android:background="@color/lightGrey"
+                            android:inputType="textPersonName" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_weight="50"
+                        android:orientation="vertical"></LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50"
+                        >
+
+                        <ImageView
+                            android:id="@+id/imageView61"
+                            android:layout_width="43dp"
+                            android:layout_height="45dp"
+                            app:srcCompat="@drawable/ic_place_black_24dp" />
+
+                        <EditText
+                            android:id="@+id/to_text_nav"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/lightGrey"
+                            android:ems="10"
+                            android:inputType="textPersonName"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/book_layout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="80dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="50"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50">
+
+                        <ImageView
+                            android:id="@+id/imageView5"
+                            android:layout_width="43dp"
+                            android:layout_height="45dp"
+                            app:srcCompat="@drawable/ic_my_location_black_24dp" />
+
+                        <EditText
+                            android:id="@+id/editText74"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:inputType="textPersonName" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50">
+
+                        <ImageView
+                            android:id="@+id/imageView67"
+                            android:layout_width="43dp"
+                            android:layout_height="45dp"
+                            app:srcCompat="@drawable/ic_place_black_24dp" />
+
+                        <EditText
+                            android:id="@+id/editText12"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:inputType="textPersonName" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnBookTrip"
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="50"
+                    android:text="Button" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 

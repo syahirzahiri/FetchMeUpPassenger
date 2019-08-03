@@ -337,10 +337,24 @@ public class MainMapFragment extends Fragment implements
                 for (UserLocation userLocation : mUserLocations) {
                     try {
                         String snippet = "";
+//                        if (userLocation.getUser().getUser_id().equals(FirebaseAuth.getInstance().getUid())) {
+//                            snippet = "This is you";
+//                        } else {
+//                            snippet = "Determine route to " + userLocation.getUser().getUsername() + "?";
+//                        }
+
                         if (userLocation.getUser().getUser_id().equals(FirebaseAuth.getInstance().getUid())) {
                             snippet = "This is you";
+                        } else if (userLocation.getUser().getStatus().equals("Driver")){
+                            snippet = "Driver";
+                        } else if (userLocation.getUser().getStatus().equals("PlaceNear")){
+                            snippet = "Go to " + userLocation.getUser().getUsername() + "?";
+                        } else if (userLocation.getUser().getStatus().equals("Place")){
+                            snippet = "Go to " + userLocation.getUser().getUsername() + "?";
+                        } else if (userLocation.getUser().getStatus().equals("Passenger")){
+                            snippet = "Passenger";
                         } else {
-                            snippet = "Determine route to " + userLocation.getUser().getUsername() + "?";
+                            snippet = "ignore";
                         }
 
                         int avatar = R.drawable.cartman_cop; // set the default avatar
@@ -528,7 +542,8 @@ public class MainMapFragment extends Fragment implements
             alert.show();
         }
         else{
-            if (marker.getSnippet().equals("This is you")) {
+            if ((marker.getSnippet().equals("This is you")) || (marker.getSnippet().equals("Driver"))
+                    || (marker.getSnippet().equals("Passenger")) || (marker.getSnippet().equals("ignore"))) {
                 marker.hideInfoWindow();
             } else {
 

@@ -14,6 +14,7 @@ public class Driver implements Parcelable {
     private String matric_id;
     private String avatar;
 
+
     public Driver(String first_name, String last_name, String email, String user_id, String username, String phone_no, String matric_id, String avatar) {
         this.first_name = first_name;
         this.last_name = last_name;

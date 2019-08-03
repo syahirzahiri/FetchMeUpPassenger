@@ -31,10 +31,6 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.urbantechies.fetch_me_up_passenger.R;
-import com.urbantechies.fetch_me_up_passenger.model.Driver;
-import com.urbantechies.fetch_me_up_passenger.model.DriverLocation;
-import com.urbantechies.fetch_me_up_passenger.model.Passenger;
-import com.urbantechies.fetch_me_up_passenger.model.PassengerLocation;
 import com.urbantechies.fetch_me_up_passenger.model.User;
 import com.urbantechies.fetch_me_up_passenger.model.UserLocation;
 
@@ -47,21 +43,12 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private BottomNavigationView bottomNavigationView;
-    private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private FirebaseFirestore mDb;
-    private UserLocation mUserLocation;
-    private PassengerLocation mPassengerLocation;
 
-    private User currUser;
-    private ListenerRegistration mDriverListEventListener;
     private ListenerRegistration mUserListEventListener;
     private ArrayList<User> mUserList = new ArrayList<>();
     private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
-    private ArrayList<Driver> mDriverList = new ArrayList<>();
-    private ArrayList<DriverLocation> mDriverLocations = new ArrayList<>();
-    private ArrayList<Passenger> mPassengerList = new ArrayList<>();
-    private ArrayList<PassengerLocation> mPassengerLocationList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +80,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             bottomNavigationView.setSelectedItemId(R.id.nav_home);
         }
 
-        addAllUser();
+       // addAllUser();
 
     }
 

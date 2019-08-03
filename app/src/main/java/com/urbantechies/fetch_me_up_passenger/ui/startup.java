@@ -12,6 +12,7 @@ import com.urbantechies.fetch_me_up_passenger.passengers.loginpassenger;
 
 public class startup extends AppCompatActivity {
 
+    private String TAG = "startup";
     private Button passenger_btn;
 
 
@@ -22,12 +23,13 @@ public class startup extends AppCompatActivity {
 
         passenger_btn = findViewById(R.id.passengerbtn);
 
+      //  int avatar = R.drawable.ic_person_black_24dp;
+       // Log.d(TAG, Integer.toString(avatar));
 
         passenger_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent toLogin = new Intent(startup.this, loginpassenger.class);
-                toLogin.putExtra("currMode", "Passenger");
                 startActivity(toLogin);
             }
         });
