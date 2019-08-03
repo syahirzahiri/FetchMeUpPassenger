@@ -3,9 +3,7 @@ package com.urbantechies.fetch_me_up_passenger.passengers;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,7 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +33,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,6 +49,7 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.urbantechies.fetch_me_up_passenger.R;
 import com.urbantechies.fetch_me_up_passenger.model.ClusterMarker;
+import com.urbantechies.fetch_me_up_passenger.model.JobData;
 import com.urbantechies.fetch_me_up_passenger.model.PolylineData;
 import com.urbantechies.fetch_me_up_passenger.model.UserLocation;
 import com.urbantechies.fetch_me_up_passenger.util.MyClusterManagerRenderer;
@@ -81,6 +84,12 @@ public class MainMapFragment extends Fragment implements
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
     private Marker mSelectedMarker = null;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
+    private FirebaseFirestore mDb;
+    private JobData jobData;
+
+    private LinearLayout mNavigationLayout, mBookingLayout;
+    private EditText mFromTextNav, mToTextNav, mFromTextBook, mToTextBook;
+    private TextView mFareText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,9 +101,7 @@ public class MainMapFragment extends Fragment implements
             mUserLocations.addAll(locations);
         }
 
-        for (UserLocation userLocation : mUserLocations) {
-            Log.d(TAG, "username: fragment " + userLocation.getUser().getUser_id());
-        }
+        mDb = FirebaseFirestore.getInstance();
         setUserPosition();
 
     }
@@ -105,6 +112,18 @@ public class MainMapFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_main_map, container, false);
         mMapView = view.findViewById(R.id.navigation_map);
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
+        view.findViewById(R.id.btnBookTrip).setOnClickListener(this);
+
+        mNavigationLayout = view.findViewById(R.id.navigation_layout);
+        mBookingLayout = view.findViewById(R.id.bookinglayout);
+        mFromTextNav = view.findViewById(R.id.from_text_nav);
+        mToTextNav = view.findViewById(R.id.to_text_nav);
+        mFromTextBook = view.findViewById(R.id.from_text_book);
+        mToTextBook = view.findViewById(R.id.to_text_book);
+        mFareText = view.findViewById(R.id.faretxt);
+
+        mNavigationLayout.setVisibility(View.VISIBLE);
+        mBookingLayout.setVisibility(View.GONE);
 
         initGoogleMap(savedInstanceState);
 
@@ -112,11 +131,11 @@ public class MainMapFragment extends Fragment implements
         return view;
     }
 
-    private void resetMap(){
-        if(mGoogleMap != null) {
+    private void resetMap() {
+        if (mGoogleMap != null) {
             mGoogleMap.clear();
 
-            if(mClusterManager != null){
+            if (mClusterManager != null) {
                 mClusterManager.clearItems();
             }
 
@@ -125,7 +144,7 @@ public class MainMapFragment extends Fragment implements
                 mClusterMarkers = new ArrayList<>();
             }
 
-            if(mPolyLinesData.size() > 0){
+            if (mPolyLinesData.size() > 0) {
                 mPolyLinesData.clear();
                 mPolyLinesData = new ArrayList<>();
             }
@@ -150,14 +169,14 @@ public class MainMapFragment extends Fragment implements
         );
     }
 
-    private void removeTripMarkers(){
-        for(Marker marker: mTripMarkers){
+    private void removeTripMarkers() {
+        for (Marker marker : mTripMarkers) {
             marker.remove();
         }
     }
 
-    private void resetSelectedMarker(){
-        if(mSelectedMarker != null){
+    private void resetSelectedMarker() {
+        if (mSelectedMarker != null) {
             mSelectedMarker.setVisible(true);
             mSelectedMarker = null;
             removeTripMarkers();
@@ -165,7 +184,7 @@ public class MainMapFragment extends Fragment implements
     }
 
 
-    private void calculateDirections(Marker marker) {
+    private void calculateDirections(final Marker marker) {
         Log.d(TAG, "calculateDirections: calculating directions.");
 
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
@@ -173,6 +192,8 @@ public class MainMapFragment extends Fragment implements
                 marker.getPosition().longitude
         );
         DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
+
+        String destinationTitle = marker.getTitle();
 
         // show all possible routes
         directions.alternatives(true);
@@ -192,6 +213,30 @@ public class MainMapFragment extends Fragment implements
                 Log.d(TAG, "calculateDirections: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
 
                 addPolylinesToMap(result);
+                String id = mDb.collection("Job Ready").document().getId();
+                com.google.maps.model.LatLng userLatLng = new com.google.maps.model.LatLng(
+                        mUserPosition.getGeo_point().getLatitude(),
+                        mUserPosition.getGeo_point().getLongitude()
+                );
+
+
+                String currdistance = result.routes[0].legs[0].distance.toString();
+                currdistance = currdistance.substring(0, currdistance.length() - 2);
+                Log.d(TAG, "currdistance: " + currdistance);
+                float distance = Float.parseFloat(currdistance);
+                float price = distance * 1;
+
+
+                if (distance > 4.0) {
+                    mFareText.setText("RM " + price + "0");
+                } else {
+                    mFareText.setText("RM 2.00");
+                }
+
+                JobData tempJobData = new JobData(mUserPosition.getUser(), null, id, "ready", userLatLng, null, destination, destinationTitle, mFareText.getText().toString());
+                jobData = tempJobData;
+
+
             }
 
             @Override
@@ -238,7 +283,7 @@ public class MainMapFragment extends Fragment implements
                     mPolyLinesData.add(new PolylineData(polyline, route.legs[0]));
 
                     double tempDuration = route.legs[0].duration.inSeconds;
-                    if(tempDuration < duration){
+                    if (tempDuration < duration) {
                         duration = tempDuration;
                         onPolylineClick(polyline);
                         zoomRoute(polyline.getPoints());
@@ -267,7 +312,7 @@ public class MainMapFragment extends Fragment implements
     }
 
     private void retrieveUserLocations() {
-        Log.d(TAG, "retrieveUserLocations: retrieving location of all users in the chatroom.");
+        //   Log.d(TAG, "retrieveUserLocations: retrieving location of all users in the chatroom.");
 
         try {
             for (final ClusterMarker clusterMarker : mClusterMarkers) {
@@ -343,26 +388,32 @@ public class MainMapFragment extends Fragment implements
 //                            snippet = "Determine route to " + userLocation.getUser().getUsername() + "?";
 //                        }
 
+                        int avatar = 0;
+
                         if (userLocation.getUser().getUser_id().equals(FirebaseAuth.getInstance().getUid())) {
                             snippet = "This is you";
-                        } else if (userLocation.getUser().getStatus().equals("Driver")){
+                            avatar = R.drawable.ic_person_black_24dp;
+                        } else if (userLocation.getUser().getStatus().equals("Driver")) {
                             snippet = "Driver";
-                        } else if (userLocation.getUser().getStatus().equals("PlaceNear")){
+                            avatar = R.drawable.ic_directions_car_black_24dp;
+                        } else if (userLocation.getUser().getStatus().equals("PlaceNear")) {
                             snippet = "Go to " + userLocation.getUser().getUsername() + "?";
-                        } else if (userLocation.getUser().getStatus().equals("Place")){
+                            avatar = R.drawable.ic_place_black_24dp;
+                        } else if (userLocation.getUser().getStatus().equals("Place")) {
                             snippet = "Go to " + userLocation.getUser().getUsername() + "?";
-                        } else if (userLocation.getUser().getStatus().equals("Passenger")){
+                            avatar = R.drawable.ic_place_black_24dp;
+                        } else if (userLocation.getUser().getStatus().equals("Passenger")) {
                             snippet = "Passenger";
                         } else {
                             snippet = "ignore";
                         }
 
-                        int avatar = R.drawable.cartman_cop; // set the default avatar
-                        try {
-                            avatar = Integer.parseInt(userLocation.getUser().getAvatar());
-                        } catch (NumberFormatException e) {
-                            Log.d(TAG, "addMapMarkers: no avatar for " + userLocation.getUser().getUsername() + ", setting default.");
-                        }
+//                        int avatar = R.drawable.ic_person_black_24dp; // set the default avatar
+//                        try {
+//                            avatar = Integer.parseInt(userLocation.getUser().getAvatar());
+//                        } catch (NumberFormatException e) {
+//                            Log.d(TAG, "addMapMarkers: no avatar for " + userLocation.getUser().getUsername() + ", setting default.");
+//                        }
                         ClusterMarker newClusterMarker = new ClusterMarker(
                                 new LatLng(userLocation.getGeo_point().getLatitude(), userLocation.getGeo_point().getLongitude()),
                                 userLocation.getUser().getUsername(),
@@ -370,8 +421,14 @@ public class MainMapFragment extends Fragment implements
                                 avatar,
                                 userLocation.getUser()
                         );
-                        mClusterManager.addItem(newClusterMarker);
-                        mClusterMarkers.add(newClusterMarker);
+
+                        String status = userLocation.getUser().getStatus();
+
+                        if (status != "Passenger") {
+                            mClusterManager.addItem(newClusterMarker);
+                            mClusterMarkers.add(newClusterMarker);
+                        }
+
 
                     } catch (NullPointerException e) {
                         Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage());
@@ -389,10 +446,10 @@ public class MainMapFragment extends Fragment implements
     private void setCameraView() {
 
 
-        double bottomBoundary = mUserPosition.getGeo_point().getLatitude() - .1;
-        double leftBoundary = mUserPosition.getGeo_point().getLongitude() - .1;
-        double topBoundary = mUserPosition.getGeo_point().getLatitude() + .1;
-        double rightBoundary = mUserPosition.getGeo_point().getLongitude() + .1;
+        double bottomBoundary = mUserPosition.getGeo_point().getLatitude() - .01;
+        double leftBoundary = mUserPosition.getGeo_point().getLongitude() - .01;
+        double topBoundary = mUserPosition.getGeo_point().getLatitude() + .01;
+        double rightBoundary = mUserPosition.getGeo_point().getLongitude() + .01;
 
 //        double bottomBoundary = 4.3877663 - .1;
 //        double leftBoundary = 100.9639676 - .1;
@@ -439,6 +496,28 @@ public class MainMapFragment extends Fragment implements
         }
 
     }
+
+    private void createJob() {
+
+        DocumentReference jobRef = mDb.collection(getString(R.string.collection_job_ready))
+                .document(jobData.getId());
+
+        jobRef.set(jobData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onComplete: Added to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -510,26 +589,28 @@ public class MainMapFragment extends Fragment implements
 
     @Override
     public void onInfoWindowClick(final Marker marker) {
-        if(marker.getTitle().contains("Trip #")){
+        if (marker.getTitle().contains("Trip #")) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage("Open Google Maps?")
                     .setCancelable(true)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            String latitude = String.valueOf(marker.getPosition().latitude);
-                            String longitude = String.valueOf(marker.getPosition().longitude);
-                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
-                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                            mapIntent.setPackage("com.google.android.apps.maps");
 
-                            try{
-                                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                    startActivity(mapIntent);
-                                }
-                            }catch (NullPointerException e){
-                                Log.e(TAG, "onClick: NullPointerException: Couldn't open map." + e.getMessage() );
-                                Toast.makeText(getActivity(), "Couldn't open map", Toast.LENGTH_SHORT).show();
-                            }
+
+//                            String latitude = String.valueOf(marker.getPosition().latitude);
+//                            String longitude = String.valueOf(marker.getPosition().longitude);
+//                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
+//                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+//                            mapIntent.setPackage("com.google.android.apps.maps");
+//
+//                            try{
+//                                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                                    startActivity(mapIntent);
+//                                }
+//                            }catch (NullPointerException e){
+//                                Log.e(TAG, "onClick: NullPointerException: Couldn't open map." + e.getMessage() );
+//                                Toast.makeText(getActivity(), "Couldn't open map", Toast.LENGTH_SHORT).show();
+//                            }
 
                         }
                     })
@@ -540,18 +621,25 @@ public class MainMapFragment extends Fragment implements
                     });
             final AlertDialog alert = builder.create();
             alert.show();
-        }
-        else{
+        } else {
             if ((marker.getSnippet().equals("This is you")) || (marker.getSnippet().equals("Driver"))
                     || (marker.getSnippet().equals("Passenger")) || (marker.getSnippet().equals("ignore"))) {
                 marker.hideInfoWindow();
             } else {
+                mNavigationLayout.setVisibility(View.VISIBLE);
+                mBookingLayout.setVisibility(View.GONE);
+                mFromTextNav.setText("My Location");
+                mToTextNav.setText(marker.getTitle());
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(marker.getSnippet())
                         .setCancelable(true)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                mNavigationLayout.setVisibility(View.GONE);
+                                mBookingLayout.setVisibility(View.VISIBLE);
+                                mFromTextBook.setText("My Location");
+                                mToTextBook.setText(marker.getTitle());
                                 resetSelectedMarker();
                                 mSelectedMarker = marker;
                                 calculateDirections(marker);
@@ -605,10 +693,15 @@ public class MainMapFragment extends Fragment implements
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_reset_map:{
+        switch (view.getId()) {
+            case R.id.btn_reset_map: {
                 addMapMarkers();
                 startUserLocationsRunnable();
+                break;
+            }
+
+            case R.id.btnBookTrip: {
+                createJob();
                 break;
             }
         }

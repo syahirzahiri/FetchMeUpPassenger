@@ -82,7 +82,7 @@ public class signuppassenger extends AppCompatActivity implements View.OnClickLi
                             user.setFirst_name(firstName);
                             user.setLast_name(lastName);
                             user.setEmail(email);
-                            user.setUsername(email.substring(0, email.indexOf("@")));
+                            user.setUsername(firstName);
                             user.setUser_id(FirebaseAuth.getInstance().getUid());
                             user.setPhone_no(phoneNo);
                             user.setMatric_id(matricID);

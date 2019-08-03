@@ -36,6 +36,7 @@
     <string name="collection_user">User</string>
     <string name="collection_user_locations">User Locations</string>
     <string name="collection_user_online">User Online</string>
+    <string name="collection_job_ready">Job Ready</string>
 
     <!-- Intent Syahir extras -->
     <string name="intent_passenger_location">intent_passenger_location</string>

@@ -12,7 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,7 +44,7 @@ import static com.urbantechies.fetch_me_up_passenger.Constants.PERMISSIONS_REQUE
 public class ServiceOption extends AppCompatActivity {
 
     private static final String TAG = "ServiceOption";
-    private Button findDriverBtn;
+    private ImageButton searchDriverBtn;
     private FirebaseFirestore mDb;
 
     private boolean mLocationPermissionGranted = false;
@@ -59,10 +59,10 @@ public class ServiceOption extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_option);
 
-        findDriverBtn = findViewById(R.id.finddriverbtn);
+        searchDriverBtn = findViewById(R.id.searchdriverbtn);
         mDb = FirebaseFirestore.getInstance();
 
-        findDriverBtn.setOnClickListener(new View.OnClickListener() {
+        searchDriverBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent toHomePage = new Intent(ServiceOption.this, HomePage.class);

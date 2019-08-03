@@ -80,7 +80,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             bottomNavigationView.setSelectedItemId(R.id.nav_home);
         }
 
-       // addAllUser();
+        addAllUser();
 
     }
 
@@ -130,12 +130,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                     if (task.getResult().toObject(UserLocation.class) != null) {
                         mUserLocations.add(task.getResult().toObject(UserLocation.class));
                     }
-
-                    for (UserLocation userLocation : mUserLocations) {
-                        Log.d(TAG, "getDriverLocation: user location: inside ");
-                        Log.d(TAG, "getDriverLocation: user location: " + userLocation.getUser().getUsername());
-                        Log.d(TAG, "getDriverLocation: user latitude: " + userLocation.getGeo_point().getLongitude() + ", " + userLocation.getGeo_point().getLatitude());
-                    }
                 }
             }
         });
@@ -151,12 +145,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 if (task.isSuccessful()) {
                     if (task.getResult().toObject(UserLocation.class) != null) {
                         mUserLocations.add(task.getResult().toObject(UserLocation.class));
-                    }
-
-                    for (UserLocation userLocation : mUserLocations) {
-                        Log.d(TAG, "getPassengerLocation: user location: inside ");
-                        Log.d(TAG, "getPassengerLocation: user location: " + userLocation.getUser().getUsername());
-                        Log.d(TAG, "getPassengerLocation: user latitude: " + userLocation.getGeo_point().getLongitude() + ", " + userLocation.getGeo_point().getLatitude());
                     }
                 }
             }

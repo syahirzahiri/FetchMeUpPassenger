@@ -44,7 +44,6 @@ public class loginpassenger extends AppCompatActivity {
     private Button signin_btn;
     private Button signup_btn;
 
-    private String currMode;
     private User currUser;
 
     @Override
@@ -62,8 +61,6 @@ public class loginpassenger extends AppCompatActivity {
         setupFirebaseAuth();
         hideSoftKeyboard();
 
-        currMode = getIntent().getStringExtra("currMode");
-
 
         signin_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +73,6 @@ public class loginpassenger extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent toSignUp = new Intent(loginpassenger.this, signuppassenger.class);
-                toSignUp.putExtra("currMode", currMode);
                 startActivity(toSignUp);
             }
         });
