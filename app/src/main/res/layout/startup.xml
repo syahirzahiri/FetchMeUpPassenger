@@ -25,7 +25,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/finddriverbtn2"
             android:layout_width="match_parent"
             android:layout_height="154dp"
             app:srcCompat="@drawable/logo" />

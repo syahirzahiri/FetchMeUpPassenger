@@ -25,10 +25,44 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/finddriverbtn2"
             android:layout_width="match_parent"
             android:layout_height="154dp"
             app:srcCompat="@drawable/logo" />
+
+        <TextView
+            android:id="@+id/textView36"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="10dp"
+            android:text="Hi Atiq!"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView37"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="20dp"
+            android:lines="2"
+            android:text="Please do click on 'Search Driver to\nstart on Fetch Me Up service."
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:background="	#DEB887"
+            android:src="@drawable/activity_car" />
 
         <Button
             android:id="@+id/finddriverbtn"
@@ -38,10 +72,11 @@
             android:layout_marginTop="100dp"
             android:layout_marginRight="100dp"
             android:layout_marginBottom="100dp"
-            android:textSize="20dp"
             android:background="#FFFFFF"
             android:padding="20dp"
-            android:text="Search Driver" />
+            android:text="Search Driver"
+            android:textSize="20dp"
+            tools:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
