@@ -1,6 +1,7 @@
 package com.urbantechies.fetch_me_up_passenger;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,6 +35,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.urbantechies.fetch_me_up_passenger.model.User;
 import com.urbantechies.fetch_me_up_passenger.model.UserLocation;
 import com.urbantechies.fetch_me_up_passenger.passengers.HomePage;
+import com.urbantechies.fetch_me_up_passenger.services.LocationService;
 
 import static com.urbantechies.fetch_me_up_passenger.Constants.ERROR_DIALOG_REQUEST;
 import static com.urbantechies.fetch_me_up_passenger.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
@@ -50,7 +52,6 @@ public class ServiceOption extends AppCompatActivity {
     private UserLocation mUserLocation;
 
     private User currUser;
-
 
 
     @Override
@@ -71,6 +72,32 @@ public class ServiceOption extends AppCompatActivity {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mDb = FirebaseFirestore.getInstance();
+    }
+
+    private void startLocationService() {
+        if (!isLocationServiceRunning()) {
+            Intent serviceIntent = new Intent(this, LocationService.class);
+//        this.startService(serviceIntent);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                ServiceOption.this.startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+        }
+    }
+
+    private boolean isLocationServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.urbantechies.fetch_me_up_passenger.services.LocationService".equals(service.service.getClassName())) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+                return true;
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+        return false;
     }
 
 
@@ -118,6 +145,7 @@ public class ServiceOption extends AppCompatActivity {
                     mUserLocation.setGeo_point(geoPoint);
                     mUserLocation.setTimestamp(null);
                     saveUserLocation();
+                    startLocationService();
                 }
             }
         });
@@ -152,7 +180,7 @@ public class ServiceOption extends AppCompatActivity {
         if (checkMapServices()) {
             if (mLocationPermissionGranted) {
                 getUserDetails();
-              //  addAllUser();
+                //  addAllUser();
             } else {
                 getLocationPermission();
             }
