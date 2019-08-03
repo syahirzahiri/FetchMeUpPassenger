@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,9 +38,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
@@ -85,11 +92,14 @@ public class MainMapFragment extends Fragment implements
     private Marker mSelectedMarker = null;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
     private FirebaseFirestore mDb;
-    private JobData jobData;
+    private JobData mJobData;
+    private ListenerRegistration mTripEventListener;
 
     private LinearLayout mNavigationLayout, mBookingLayout;
     private EditText mFromTextNav, mToTextNav, mFromTextBook, mToTextBook;
     private TextView mFareText;
+    private Button mButtonBook;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,7 +122,9 @@ public class MainMapFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_main_map, container, false);
         mMapView = view.findViewById(R.id.navigation_map);
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
-        view.findViewById(R.id.btnBookTrip).setOnClickListener(this);
+
+        mButtonBook = view.findViewById(R.id.btnBookTrip);
+        mButtonBook.setOnClickListener(this);
 
         mNavigationLayout = view.findViewById(R.id.navigation_layout);
         mBookingLayout = view.findViewById(R.id.bookinglayout);
@@ -130,6 +142,122 @@ public class MainMapFragment extends Fragment implements
 
         return view;
     }
+
+    private void AutoUpdateDestination() {
+
+        CollectionReference usersRef = mDb.collection(getString(R.string.collection_job_ready));
+
+        mTripEventListener = usersRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.e(TAG, "onEvent: Listen failed.", e);
+                    return;
+                }
+
+                //error autorun but mostly okay
+
+                if (queryDocumentSnapshots != null) {
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        JobData jobData = doc.toObject(JobData.class);
+                        if ((jobData.getStatus().equals("accepted")) && (jobData.getId().equals(mJobData.getId()))) {
+                            calculateDirectionsTrip(jobData,jobData.getStatus());
+                            mButtonBook.setText("Arrived Safely");
+                            break;
+                        }else if((jobData.getStatus().equals("ongoing")) && (jobData.getId().equals(mJobData.getId()))){
+                            calculateDirectionsTrip(jobData,jobData.getStatus());
+                            break;
+                        }else if((jobData.getStatus().equals("completed")) && (jobData.getId().equals(mJobData.getId()))){
+                            finishTrip();
+                            break;
+                        }
+                    }
+
+                }
+            }
+        });
+
+    }
+
+    private void finishTrip(){
+        DocumentReference endRef = mDb.collection(getString(R.string.collection_job_ready))
+                .document(mJobData.getId());
+
+        endRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onComplete: Success Getting the job!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
+    }
+
+    private void calculateDirectionsTrip(JobData jobData, String status) {
+        Log.d(TAG, "calculateDirections: calculating directions.");
+
+        com.google.maps.model.LatLng destination;
+
+        if (status.equals("accepted")) {
+            destination = new com.google.maps.model.LatLng(
+                    jobData.getDriver_location().lat,
+                    jobData.getDriver_location().lng
+            );
+        } else {
+            destination = new com.google.maps.model.LatLng(
+                    jobData.getDestination_location().lat,
+                    jobData.getDestination_location().lng
+            );
+        }
+
+        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
+
+        // show all possible routes
+        directions.alternatives(true);
+
+        if (status.equals("accepted")) {
+            directions.origin(
+                    new com.google.maps.model.LatLng(
+                            mUserPosition.getGeo_point().getLatitude(),
+                            mUserPosition.getGeo_point().getLongitude()
+                    )
+            );
+        } else {
+            directions.origin(
+                    new com.google.maps.model.LatLng(
+                            jobData.getPassenger_location().lat,
+                            jobData.getPassenger_location().lng
+                    )
+            );
+        }
+
+
+        Log.d(TAG, "calculateDirections: destination: " + destination.toString());
+        directions.destination(destination).setCallback(new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                Log.d(TAG, "calculateDirections: routes: " + result.routes[0].toString());
+                Log.d(TAG, "calculateDirections: duration: " + result.routes[0].legs[0].duration);
+                Log.d(TAG, "calculateDirections: distance: " + result.routes[0].legs[0].distance);
+                Log.d(TAG, "calculateDirections: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
+
+                addPolylinesToMap(result);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.e(TAG, "calculateDirections: Failed to get directions: " + e.getMessage());
+
+            }
+        });
+    }
+
+
 
     private void resetMap() {
         if (mGoogleMap != null) {
@@ -234,7 +362,7 @@ public class MainMapFragment extends Fragment implements
                 }
 
                 JobData tempJobData = new JobData(mUserPosition.getUser(), null, id, "ready", userLatLng, null, destination, destinationTitle, mFareText.getText().toString());
-                jobData = tempJobData;
+                mJobData = tempJobData;
 
 
             }
@@ -302,6 +430,7 @@ public class MainMapFragment extends Fragment implements
             @Override
             public void run() {
                 retrieveUserLocations();
+                AutoUpdateDestination();
                 mHandler.postDelayed(mRunnable, LOCATION_UPDATE_INTERVAL);
             }
         }, LOCATION_UPDATE_INTERVAL);
@@ -500,9 +629,9 @@ public class MainMapFragment extends Fragment implements
     private void createJob() {
 
         DocumentReference jobRef = mDb.collection(getString(R.string.collection_job_ready))
-                .document(jobData.getId());
+                .document(mJobData.getId());
 
-        jobRef.set(jobData)
+        jobRef.set(mJobData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -701,7 +830,16 @@ public class MainMapFragment extends Fragment implements
             }
 
             case R.id.btnBookTrip: {
-                createJob();
+
+                if(mButtonBook.getText().toString().equals("Make A Booking")){
+                    createJob();
+                }else{
+                    mButtonBook.setText("Make A Booking");
+                    mBookingLayout.setVisibility(View.GONE);
+                    resetMap();
+                    startUserLocationsRunnable();
+                }
+
                 break;
             }
         }
