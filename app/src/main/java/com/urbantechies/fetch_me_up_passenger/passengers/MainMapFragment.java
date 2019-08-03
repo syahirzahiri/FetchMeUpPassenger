@@ -2,6 +2,7 @@ package com.urbantechies.fetch_me_up_passenger.passengers;
 
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -21,13 +23,18 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.model.DirectionsResult;
 import com.urbantechies.fetch_me_up_passenger.R;
 import com.urbantechies.fetch_me_up_passenger.model.ClusterMarker;
 import com.urbantechies.fetch_me_up_passenger.model.UserLocation;
@@ -39,7 +46,9 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainMapFragment extends Fragment implements OnMapReadyCallback {
+public class MainMapFragment extends Fragment implements
+        OnMapReadyCallback,
+        GoogleMap.OnInfoWindowClickListener {
 
     private static final String TAG = "MainMapFragment";
     private static final int LOCATION_UPDATE_INTERVAL = 3000;
@@ -55,8 +64,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     private ArrayList<ClusterMarker> mClusterMarkers = new ArrayList<>();
     private Handler mHandler = new Handler();
     private Runnable mRunnable;
-
-
+    private GeoApiContext mGeoApiContext = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,8 +96,43 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    private void calculateDirections(Marker marker){
+        Log.d(TAG, "calculateDirections: calculating directions.");
 
-    private void startUserLocationsRunnable(){
+        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
+                marker.getPosition().latitude,
+                marker.getPosition().longitude
+        );
+        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
+
+        // show all possible routes
+        directions.alternatives(true);
+        directions.origin(
+                new com.google.maps.model.LatLng(
+                        mUserPosition.getGeo_point().getLatitude(),
+                        mUserPosition.getGeo_point().getLongitude()
+                )
+        );
+        Log.d(TAG, "calculateDirections: destination: " + destination.toString());
+        directions.destination(destination).setCallback(new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                Log.d(TAG, "calculateDirections: routes: " + result.routes[0].toString());
+                Log.d(TAG, "calculateDirections: duration: " + result.routes[0].legs[0].duration);
+                Log.d(TAG, "calculateDirections: distance: " + result.routes[0].legs[0].distance);
+                Log.d(TAG, "calculateDirections: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.e(TAG, "calculateDirections: Failed to get directions: " + e.getMessage() );
+
+            }
+        });
+    }
+
+
+    private void startUserLocationsRunnable() {
         Log.d(TAG, "startUserLocationsRunnable: starting runnable for retrieving updated locations.");
         mHandler.postDelayed(mRunnable = new Runnable() {
             @Override
@@ -100,15 +143,15 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         }, LOCATION_UPDATE_INTERVAL);
     }
 
-    private void stopLocationUpdates(){
+    private void stopLocationUpdates() {
         mHandler.removeCallbacks(mRunnable);
     }
 
-    private void retrieveUserLocations(){
+    private void retrieveUserLocations() {
         Log.d(TAG, "retrieveUserLocations: retrieving location of all users in the chatroom.");
 
-        try{
-            for(final ClusterMarker clusterMarker: mClusterMarkers){
+        try {
+            for (final ClusterMarker clusterMarker : mClusterMarkers) {
 
                 DocumentReference userLocationRef = FirebaseFirestore.getInstance()
                         .collection(getString(R.string.collection_user_locations))
@@ -117,7 +160,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
                 userLocationRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
 
                             final UserLocation updatedUserLocation = task.getResult().toObject(UserLocation.class);
 
@@ -144,12 +187,11 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
                     }
                 });
             }
-        }catch (IllegalStateException e){
-            Log.e(TAG, "retrieveUserLocations: Fragment was destroyed during Firestore query. Ending query." + e.getMessage() );
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "retrieveUserLocations: Fragment was destroyed during Firestore query. Ending query." + e.getMessage());
         }
 
     }
-
 
 
     private void addMapMarkers() {
@@ -255,6 +297,12 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
 
         mMapView.getMapAsync(this);
 
+        if(mGeoApiContext == null){
+            mGeoApiContext = new GeoApiContext.Builder()
+                    .apiKey(getString(R.string.google_maps_api_key))
+                    .build();
+        }
+
     }
 
     @Override
@@ -301,6 +349,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         map.setMyLocationEnabled(true);
         mGoogleMap = map;
         addMapMarkers();
+        mGoogleMap.setOnInfoWindowClickListener(this);
     }
 
     @Override
@@ -323,4 +372,28 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    @Override
+    public void onInfoWindowClick(final Marker marker) {
+        if (marker.getSnippet().equals("This is you")) {
+            marker.hideInfoWindow();
+        } else {
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(marker.getSnippet())
+                    .setCancelable(true)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            calculateDirections(marker);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+        }
+    }
 }
