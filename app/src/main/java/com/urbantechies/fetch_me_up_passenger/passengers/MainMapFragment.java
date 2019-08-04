@@ -361,7 +361,7 @@ public class MainMapFragment extends Fragment implements
                 float price = distance * 1;
 
 
-                if (distance > 4.0) {
+                if (distance > 2.0) {
                     mFareText.setText("RM " + price + "0");
                 } else {
                     mFareText.setText("RM 2.00");

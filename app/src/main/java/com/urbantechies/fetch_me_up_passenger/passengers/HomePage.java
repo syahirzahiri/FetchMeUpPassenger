@@ -206,9 +206,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                         case R.id.nav_request:
                             selectedFragment = new RunJoinRide();
                             break;
-                        case R.id.nav_custom_ride:
-                            selectedFragment = new CustomRideFragment();
-                            break;
                     }
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment,

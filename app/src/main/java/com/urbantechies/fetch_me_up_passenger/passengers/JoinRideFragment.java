@@ -152,15 +152,12 @@ public class JoinRideFragment extends Fragment implements View.OnClickListener {
                 joinbtn.setBackgroundColor(getResources().getColor(R.color.darkGrey));
             }
         }
+        TextView destination = myLayout.findViewById(R.id.destination_text_ride);
+        destination.setText("Destination: " + rideData.getDestination());
 
         TextView driverName = myLayout.findViewById(R.id.driver_text_ride);
         driverName.setText("Driver: " + rideData.getDriver().getFirst_name());
 
-        TextView id = myLayout.findViewById(R.id.id_text_ride);
-        id.setText("ID: " + rideData.getId());
-
-        TextView destination = myLayout.findViewById(R.id.destination_text_ride);
-        destination.setText("Destination: " + rideData.getDestination());
 
         TextView pickup = myLayout.findViewById(R.id.pickup_text_ride);
         pickup.setText("Pick Up: " + rideData.getPickup());
@@ -172,7 +169,7 @@ public class JoinRideFragment extends Fragment implements View.OnClickListener {
         datetime.setText("DateTime: " + rideData.getDate() + " " + rideData.getTime());
 
         TextView fare = myLayout.findViewById(R.id.fare_text_ride);
-        fare.setText("Fare: " + rideData.getFare());
+        fare.setText("Fare: RM" + rideData.getFare());
 
         TextView status = myLayout.findViewById(R.id.status_text_ride);
         status.setText("Status: " + rideData.getStatus());

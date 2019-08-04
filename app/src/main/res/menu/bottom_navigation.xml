@@ -11,9 +11,4 @@
         android:icon="@drawable/ic_request"
         android:title="Join Trip" />
 
-    <item
-        android:id="@+id/nav_custom_ride"
-        android:icon="@drawable/ic_custom_ride"
-        android:title="My Trip" />
-
 </menu>
