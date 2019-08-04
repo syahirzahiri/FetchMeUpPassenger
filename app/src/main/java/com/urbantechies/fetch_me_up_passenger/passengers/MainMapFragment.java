@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -97,8 +98,9 @@ public class MainMapFragment extends Fragment implements
 
     private LinearLayout mNavigationLayout, mBookingLayout;
     private EditText mFromTextNav, mToTextNav, mFromTextBook, mToTextBook;
-    private TextView mFareText;
+    private TextView mFareText, mStatusTripText;
     private Button mButtonBook;
+    private boolean isOnTrip = false;
 
 
     @Override
@@ -133,6 +135,7 @@ public class MainMapFragment extends Fragment implements
         mFromTextBook = view.findViewById(R.id.from_text_book);
         mToTextBook = view.findViewById(R.id.to_text_book);
         mFareText = view.findViewById(R.id.faretxt);
+        mStatusTripText = view.findViewById(R.id.textStatusTrip);
 
         mNavigationLayout.setVisibility(View.VISIBLE);
         mBookingLayout.setVisibility(View.GONE);
@@ -161,7 +164,10 @@ public class MainMapFragment extends Fragment implements
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         JobData jobData = doc.toObject(JobData.class);
                         if ((jobData.getStatus().equals("accepted")) && (jobData.getId().equals(mJobData.getId()))) {
+                            resetMap();
                             calculateDirectionsTrip(jobData,jobData.getStatus());
+                            mStatusTripText.setText("Driver is on its way to you!");
+                            mButtonBook.setEnabled(true);
                             mButtonBook.setText("Arrived Safely");
                             break;
                         }else if((jobData.getStatus().equals("ongoing")) && (jobData.getId().equals(mJobData.getId()))){
@@ -430,7 +436,9 @@ public class MainMapFragment extends Fragment implements
             @Override
             public void run() {
                 retrieveUserLocations();
-                AutoUpdateDestination();
+                if(isOnTrip){
+                    AutoUpdateDestination();
+                }
                 mHandler.postDelayed(mRunnable, LOCATION_UPDATE_INTERVAL);
             }
         }, LOCATION_UPDATE_INTERVAL);
@@ -832,11 +840,17 @@ public class MainMapFragment extends Fragment implements
             case R.id.btnBookTrip: {
 
                 if(mButtonBook.getText().toString().equals("Make A Booking")){
+                    //change the
                     createJob();
+                    mStatusTripText.setText("Finding Driver near you...");
+                    Toast.makeText(getActivity(),"Successfully booked", Toast.LENGTH_SHORT).show();
+                    mButtonBook.setEnabled(false);
+                    isOnTrip = true;
+                    //bool
                 }else{
                     mButtonBook.setText("Make A Booking");
                     mBookingLayout.setVisibility(View.GONE);
-                    resetMap();
+                    addMapMarkers();
                     startUserLocationsRunnable();
                 }
 

@@ -9,11 +9,11 @@
     <item
         android:id="@+id/nav_request"
         android:icon="@drawable/ic_request"
-        android:title="Request" />
+        android:title="Join Trip" />
 
     <item
         android:id="@+id/nav_custom_ride"
         android:icon="@drawable/ic_custom_ride"
-        android:title="Ride" />
+        android:title="My Trip" />
 
 </menu>

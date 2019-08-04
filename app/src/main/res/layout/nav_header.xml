@@ -12,9 +12,9 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:srcCompat="@mipmap/ic_launcher_round" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        tools:srcCompat="@drawable/ic_person_black_24dp" />
 
     <TextView
         android:id="@+id/username_top"

@@ -1,4 +1,4 @@
-package com.urbantechies.fetch_me_up_passenger.passengers;
+package com.urbantechies.fetch_me_up_passenger;
 
 
 import android.os.Bundle;
@@ -25,9 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.urbantechies.fetch_me_up_passenger.R;
 import com.urbantechies.fetch_me_up_passenger.model.User;
 import com.urbantechies.fetch_me_up_passenger.model.UserLocation;
+import com.urbantechies.fetch_me_up_passenger.passengers.JoinRideFragment;
 
 import java.util.ArrayList;
 
@@ -35,14 +35,15 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RunMap extends Fragment {
+public class RunJoinRide extends Fragment {
 
-    private String TAG = "RunMap";
+    private String TAG = "RunCustomRide";
 
     private FirebaseFirestore mDb;
     private ListenerRegistration mUserListEventListener;
     private ArrayList<User> mUserList = new ArrayList<>();
     private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,29 +56,25 @@ public class RunMap extends Fragment {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                inflateUserListFragment();
+                inflateRideFragment();
             }
 
         };
 
-        handler.postDelayed(runnable, 5000);
-
+        handler.postDelayed(runnable, 2000);
     }
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_run_map, container, false);
-
-
         // Inflate the layout for this fragment
-        return view;
-
-
+        return inflater.inflate(R.layout.fragment_run_join_ride, container, false);
     }
+
+    public static RunJoinRide newInstance() {
+        return new RunJoinRide();
+    }
+
 
     private void addAllUser() {
         getAllOnlineUsers();
@@ -125,12 +122,6 @@ public class RunMap extends Fragment {
                     if (task.getResult().toObject(UserLocation.class) != null) {
                         mUserLocations.add(task.getResult().toObject(UserLocation.class));
                     }
-
-                    for (UserLocation userLocation : mUserLocations) {
-                        Log.d(TAG, "getDriverLocation: user location: inside ");
-                        Log.d(TAG, "getDriverLocation: user location: " + userLocation.getUser().getUsername());
-                        Log.d(TAG, "getDriverLocation: user latitude: " + userLocation.getGeo_point().getLongitude() + ", " + userLocation.getGeo_point().getLatitude());
-                    }
                 }
             }
         });
@@ -147,12 +138,6 @@ public class RunMap extends Fragment {
                     if (task.getResult().toObject(UserLocation.class) != null) {
                         mUserLocations.add(task.getResult().toObject(UserLocation.class));
                     }
-
-                    for (UserLocation userLocation : mUserLocations) {
-                        Log.d(TAG, "getPassengerLocation: user location: inside ");
-                        Log.d(TAG, "getPassengerLocation: user location: " + userLocation.getUser().getUsername());
-                        Log.d(TAG, "getPassengerLocation: user latitude: " + userLocation.getGeo_point().getLongitude() + ", " + userLocation.getGeo_point().getLatitude());
-                    }
                 }
             }
         });
@@ -160,9 +145,9 @@ public class RunMap extends Fragment {
     }
 
 
-    private void inflateUserListFragment() {
+    private void inflateRideFragment() {
 
-        MainMapFragment fragment = MainMapFragment.newInstance();
+        JoinRideFragment fragment = JoinRideFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(getString(R.string.intent_user_list), mUserList);
         bundle.putParcelableArrayList(getString(R.string.intent_user_locations), mUserLocations);

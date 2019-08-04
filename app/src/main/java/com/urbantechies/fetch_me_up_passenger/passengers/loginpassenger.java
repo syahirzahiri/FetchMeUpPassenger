@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.urbantechies.fetch_me_up_passenger.R;
 import com.urbantechies.fetch_me_up_passenger.ServiceOption;
 import com.urbantechies.fetch_me_up_passenger.UserClient;
@@ -44,6 +43,8 @@ public class loginpassenger extends AppCompatActivity {
     private Button signin_btn;
     private Button signup_btn;
 
+    private FirebaseFirestore db;
+
     private User currUser;
 
     @Override
@@ -57,6 +58,8 @@ public class loginpassenger extends AppCompatActivity {
         mEmail = findViewById(R.id.emailtxt);
         mPassword = findViewById(R.id.pwtxt);
         mProgressBar = findViewById(R.id.progressBarLgn);
+
+        db = FirebaseFirestore.getInstance();
 
         setupFirebaseAuth();
         hideSoftKeyboard();
@@ -109,11 +112,11 @@ public class loginpassenger extends AppCompatActivity {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     Toast.makeText(loginpassenger.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                            .setTimestampsInSnapshotsEnabled(true)
-                            .build();
-                    db.setFirestoreSettings(settings);
+                 //   FirebaseFirestore db = FirebaseFirestore.getInstance();
+                 //   FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                 //           .setTimestampsInSnapshotsEnabled(true)
+                 //           .build();
+                  //  db.setFirestoreSettings(settings);
 
                     DocumentReference userRef = db.collection(getString(R.string.collection_passengers))
                             .document(user.getUid());
@@ -122,10 +125,12 @@ public class loginpassenger extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()){
-                                Log.d(TAG, "onComplete: successfully set the user client.");
-                                User user = task.getResult().toObject(User.class);
-                                currUser = user;
-                                ((UserClient)(getApplicationContext())).setUser(user);
+                                if (task.getResult().toObject(User.class) != null) {
+                                    Log.d(TAG, "onComplete: successfully set the user client.");
+                                    User user = task.getResult().toObject(User.class);
+                                    user = user;
+                                    ((UserClient)(getApplicationContext())).setUser(user);
+                                }
                             }
                         }
                     });

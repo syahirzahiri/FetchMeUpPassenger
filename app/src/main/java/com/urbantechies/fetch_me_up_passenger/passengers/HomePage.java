@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -31,6 +32,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.urbantechies.fetch_me_up_passenger.R;
+import com.urbantechies.fetch_me_up_passenger.RunJoinRide;
 import com.urbantechies.fetch_me_up_passenger.model.User;
 import com.urbantechies.fetch_me_up_passenger.model.UserLocation;
 
@@ -49,6 +51,9 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     private ListenerRegistration mUserListEventListener;
     private ArrayList<User> mUserList = new ArrayList<>();
     private ArrayList<UserLocation> mUserLocations = new ArrayList<>();
+    private User mUser;
+
+    private TextView mUsernameTop, mEmailTop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +73,10 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+
+        mUsernameTop = findViewById(R.id.username_top);
+        mEmailTop = findViewById(R.id.email_top);
+
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -166,10 +175,6 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                 signOut();
                 return true;
             }
-            case R.id.action_profile: {
-                //inflateUserListFragment();
-                return true;
-            }
             default: {
                 return super.onOptionsItemSelected(item);
             }
@@ -199,7 +204,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
                             selectedFragment = new RunMap();
                             break;
                         case R.id.nav_request:
-                            selectedFragment = new PassengerRequestFragment();
+                            selectedFragment = new RunJoinRide();
                             break;
                         case R.id.nav_custom_ride:
                             selectedFragment = new CustomRideFragment();

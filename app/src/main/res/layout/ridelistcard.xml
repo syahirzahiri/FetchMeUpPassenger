@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/driverViewRide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardBackgroundColor="@color/lightmain"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/id_text_ride"
+                    android:layout_width="266dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ID : #1235623"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/driver_text_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Driver: Ahmad Syahir"
+                        android:textColor="@android:color/background_dark" />
+
+                    <TextView
+                        android:id="@+id/destination_text_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Destination: Penang"
+                        android:textColor="@android:color/background_dark" />
+
+                    <TextView
+                        android:id="@+id/pickup_text_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Pick Up: V4 Cafe"
+                        android:textColor="@android:color/background_dark" />
+
+                    <TextView
+                        android:id="@+id/passenger_text_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Passenger: 0/3"
+                        android:textColor="@android:color/background_dark" />
+
+                    <TextView
+                        android:id="@+id/datetime_text_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Date: 12/09/19"
+                        android:textColor="@android:color/background_dark" />
+
+
+                    <TextView
+                        android:id="@+id/fare_text_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Time: 14:00"
+                        android:textColor="@android:color/background_dark" />
+
+
+                    <TextView
+                        android:id="@+id/status_text_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Status: Available to join"
+                        android:textColor="@android:color/background_dark" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.9"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/joinRide"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/colorAccent"
+                        android:text="Join Ride"
+                        android:textColor="@android:color/background_dark" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
