@@ -172,6 +172,7 @@ public class MainMapFragment extends Fragment implements
                             break;
                         }else if((jobData.getStatus().equals("ongoing")) && (jobData.getId().equals(mJobData.getId()))){
                             calculateDirectionsTrip(jobData,jobData.getStatus());
+                            mStatusTripText.setText("En route to your destination.");
                             break;
                         }else if((jobData.getStatus().equals("completed")) && (jobData.getId().equals(mJobData.getId()))){
                             finishTrip();
